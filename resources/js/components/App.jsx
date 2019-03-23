@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { Route, Switch } from 'react-router';
 import NavigationBar from './NavigationBar';
 import Greetings from './Greetings';

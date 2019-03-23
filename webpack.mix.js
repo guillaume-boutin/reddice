@@ -1,5 +1,12 @@
 const mix = require('laravel-mix');
-var LiveReloadPlugin = require('webpack-livereload-plugin');
+
+mix.extend('externals', new class {
+   externals () {
+      return {
+         react: 'React'
+      }
+   }
+}());
 
 mix.react('resources/js/index.js', 'public/js')
    .sourceMaps()
@@ -10,3 +17,4 @@ mix.react('resources/js/index.js', 'public/js')
    //       new LiveReloadPlugin()
    //    ]
    // });
+
