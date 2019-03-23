@@ -1,6 +1,14 @@
 import './bootstrap';
 import React from 'react';
 import { render } from 'react-dom';
-import App from './components/App';
+import { Router, Route } from 'react-router';
+import { createBrowserHistory } from 'history';
+import Routes from './routes';
 
-render(<App />, document.getElementById('app'));
+const browserHistory = createBrowserHistory();
+
+render(
+<Router history={browserHistory}>
+    <Routes />
+</Router>,
+document.getElementById('app'));
