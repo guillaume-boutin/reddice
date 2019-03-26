@@ -3,7 +3,8 @@ const mix = require('laravel-mix');
 mix.extend('externals', new class {
    externals () {
       return {
-         react: 'React'
+         react: 'React',
+         axios: 'axios'
       }
    }
 }());

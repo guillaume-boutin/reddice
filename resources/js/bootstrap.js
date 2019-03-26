@@ -21,3 +21,6 @@ if (token) {
 } else {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
+
+// set a new Api instance globally
+window.api = require('./services/api');

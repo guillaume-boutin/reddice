@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
@@ -54,6 +55,14 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware('web')
              ->namespace($this->namespace)
              ->group(base_path('routes/web.php'));
+        
+        $this->getRouteFilePaths()
+            ->each(function ($path) {
+                Route::prefix('ajax')
+                    ->middleware('web')
+                    ->namespace($this->getNamespace($path))
+                    ->group($path);
+            });
     }
 
     /**
@@ -69,5 +78,27 @@ class RouteServiceProvider extends ServiceProvider
              ->middleware('api')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
+    }
+
+    protected function getRouteFilePaths() : Collection
+    {
+        return collect(glob(base_path() . '/app/Containers/*/Routes/*php'));
+    }
+
+    protected function getNamespace(string $routesFilePath) : string
+    {
+        // make an array of each folder names of the path
+        $split = explode('/', $routesFilePath);
+        // chop everything before `app` folder
+        $appIndex = array_search('app', $split);
+        $sliced = array_slice($split, $appIndex);
+        $sliced[0] = ucfirst($sliced[0]);
+        // replace folder names `Routes by `Controllers`
+        $routesIndex = array_search('Routes', $sliced);
+        $sliced[$routesIndex] = 'Controllers';
+        // remove routes file name from path array
+        array_pop($sliced);
+
+        return implode('\\', $sliced);
     }
 }
