@@ -10,6 +10,7 @@ mix.extend('externals', new class {
 }());
 
 mix.react('resources/js/index.js', 'public/js')
+   .browserSync('reddice.local')
    .sourceMaps()
    .disableNotifications();
    // .sass('resources/sass/app.scss', 'public/css');

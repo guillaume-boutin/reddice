@@ -3,68 +3,29 @@
 namespace App\Containers\User\Actions;
 
 use App\Action;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Validator;
-use App\Containers\User\Validators\RegisterUserValidator;
-use App\Containers\User\Transporters\RegisterUserTransporter;
+use App\Containers\User\Validations\RegisterValidation;
 
 class RegisterAction extends Action
 {
-    protected $validator = RegisterUserValidator::class;
-
-    public function __construct(RegisterUserTransporter $dto)
+    public function validation()
     {
-        $this->transporter = $dto;
+        return RegisterValidation::class;
     }
 
-    public function __call($name, $args)
+    protected function execute() : self
     {
-        // if ($name !== )
-    }
-
-    public static function new(RegisterUserTransporter $dto) : self
-    {
-        return new self($dto);
-    }
-
-    /**
-     * Handle a registration request for the application.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function run()
-    {
-        if (isset($this->validations)) {
-
-        }
-        // $this->validator($request->all())->validate();
-
         $data = $this->transporter->toArray();
 
         event(new Registered($user = $this->createUser($data)));
 
         $this->guard()->login($user);
 
-        // return $this->registered($request, $user)
-        //                 ?: redirect($this->redirectPath());
-    }
+        $this->result = $user;
+        $this->status = 201;
 
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validate()
-    {
-        $data = $this->transporter->toArray();
-
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+        return $this;
     }
 
     /**
