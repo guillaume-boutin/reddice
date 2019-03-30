@@ -22,7 +22,7 @@ class RegisterAction extends Action
 
         $this->guard()->login($user);
 
-        $this->result = $user;
+        $this->result = compact('user');
         $this->status = 201;
 
         return $this;

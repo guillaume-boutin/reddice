@@ -27,5 +27,3 @@ export default connect(
     },
     { userSignupRequest }
 )(Signup);
-
-// export default Signup;
