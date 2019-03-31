@@ -47,12 +47,7 @@ abstract class Action
         try {
             $this->validate();
         } catch (ValidationException $e) {
-            $this->status = 422;
-            $this->result = [
-                'message' => 'The given data was invalid',
-                'errors' => $e->getErrors()
-            ];
-
+            $this->onValidationException($e);
             return $this;
         }
 
@@ -73,5 +68,13 @@ abstract class Action
         if ($validator->fails()) {
             throw new ValidationException($validator);
         }
+    }
+
+    protected function onValidationException (ValidationException $e) {
+        $this->status = 422;
+        $this->result = [
+            'message' => 'The given data was invalid',
+            'errors' => $e->getErrors()
+        ];
     }
 }
