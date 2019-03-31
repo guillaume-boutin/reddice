@@ -9,6 +9,7 @@ class UserController extends Controller
 {
     public function signup(Request $request)
     {
+        return response()->json(['user' => $request->all()], 201);
         $action = RegisterAction::new($request->all())->run();
         
         return $action->jsonResponse();

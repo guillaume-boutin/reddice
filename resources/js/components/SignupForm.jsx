@@ -6,16 +6,17 @@ import _isEmpty from 'lodash/isEmpty';
 import classnames from 'classnames';
 import TextFiedGroup from './common/TextFieldGroup';
 import ErrorsHelpBlock from './common/ErrorsHelpBlock';
+import { withRouter } from 'react-router-dom';
 
 class SignupForm extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.computeState(props);
         this.bindMethods();
     }
 
-    computeState (props) {
+    computeState(props) {
         this.state = {
             username: '',
             email: '',
@@ -27,12 +28,12 @@ class SignupForm extends Component {
         };
     }
 
-    bindMethods () {
+    bindMethods() {
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
     }
 
-    onChange (e) {
+    onChange(e) {
         let { errors } = this.state;
         delete errors[e.target.name];
 
@@ -42,27 +43,29 @@ class SignupForm extends Component {
         });
     }
 
-    onSubmit (e) {
+    onSubmit(e) {
         e.preventDefault();
 
-        this.setState({isSubmitting: true});
+        this.setState({ isSubmitting: true });
 
         this.props
             .userSignupRequest(this.state)
             .then(this.onSubmitSuccess.bind(this))
-            .catch(this.onSubmitFail.bind(this))
-            .finally(() => { this.setState({isSubmitting: false}) });
+            .catch(this.onSubmitFail.bind(this));
     }
 
-    onSubmitSuccess (response) {
-
+    onSubmitSuccess(response) {
+        this.props.history.push('/');
     }
 
-    onSubmitFail (error) {
-        this.setState({errors: error.response.data.errors});
+    onSubmitFail(error) {
+        this.setState({
+            errors: error.response.data.errors,
+            isSubmitting: false
+        });
     }
 
-    render () {
+    render() {
         let { errors } = this.state;
 
         return (
@@ -105,7 +108,7 @@ class SignupForm extends Component {
                     onChange={this.onChange}
                     errors={errors.password_confirmation} />
 
-                <div className={classnames("form-group", {'has-error': errors.timezone})}>
+                <div className={classnames("form-group", { 'has-error': errors.timezone })}>
                     <label htmlFor="timezone" className="control-label">Timezone</label>
 
                     <select
@@ -124,7 +127,7 @@ class SignupForm extends Component {
                 </div>
 
                 <div className="form-group">
-                    <button className="btn btn-primary btn-lg" disabled={! _isEmpty(errors) || this.state.isSubmitting}>Sign Up</button>
+                    <button className="btn btn-primary btn-lg" disabled={!_isEmpty(errors) || this.state.isSubmitting}>Sign Up</button>
                 </div>
             </form>
         );
@@ -135,4 +138,4 @@ SignupForm.propTypes = {
     userSignupRequest: PropTypes.func.isRequired
 }
 
-export default SignupForm;
+export default withRouter(SignupForm);
